@@ -58,6 +58,18 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/** Called for looking input */
+	void OnStartFire();
+
+	void OnStopFire();
+
+	void Reload();
+
+	void Zoom(bool bIsZooming);
+
+	UFUNCTION( BlueprintImplementableEvent)
+	void PlayReloadMontage();
+
 private:
 
 
@@ -67,13 +79,14 @@ private:
 
 public:
 
+
 protected:
 
 
 private:
 
 	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UE08|Components", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UE08|Components", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* CameraBoom;
 
 	/** Follow camera */
@@ -95,5 +108,17 @@ private:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category = "UE08|Input")
 	UInputAction* MouseLookAction;
+
+	/** Fire Input Action */
+	UPROPERTY(EditAnywhere, Category = "UE08|Input")
+	UInputAction* FireAction;
+
+	/** Zoom Input Action */
+	UPROPERTY(EditAnywhere, Category = "UE08|Input")
+	UInputAction* ZoomAction;
+
+	/** Reload Input Action */
+	UPROPERTY(EditAnywhere, Category = "UE08|Input")
+	UInputAction* ReloadAction;
 
 };

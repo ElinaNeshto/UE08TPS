@@ -1,7 +1,9 @@
 #include "Player/UE08BaseCharacter.h"
+#include "Actors/UE08TriggerPlatform.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/UE08HealthComponent.h"
+#include "Components/UE08WeaponComponent.h"
 
 // 
 AUE08BaseCharacter::AUE08BaseCharacter()
@@ -32,7 +34,11 @@ AUE08BaseCharacter::AUE08BaseCharacter()
 	//Health Component
 	HealthComponent = CreateDefaultSubobject<UUE08HealthComponent>("Health Component");
 
+	//WeaponComponent
+	WeaponComponent= CreateDefaultSubobject<UUE08WeaponComponent>("Weapon Component");
+
 }
+
 
 // 
 void AUE08BaseCharacter::BeginPlay()
@@ -40,9 +46,12 @@ void AUE08BaseCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	check(HealthComponent);
+	check(WeaponComponent);
 
 	HealthComponent->OnDeath.AddDynamic(this, &AUE08BaseCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AUE08BaseCharacter::HealthChanged);
+
+	WeaponComponent->InitWeaponComponent();
 
 
 
@@ -66,6 +75,52 @@ void AUE08BaseCharacter::PostInitializeComponents()
 
 	HealthComponent->InitHealthComponent();
 }
+
+//
+bool AUE08BaseCharacter::GetAimPoint(FHitResult& HitResult, FVector& OutPoint, float MaxDistance) const
+{
+	APlayerController* lController = GetController<APlayerController>();
+	if (!lController)
+		return false;
+
+	FVector lViewLocation;
+	FRotator lViewRotation;
+	lController->GetPlayerViewPoint(lViewLocation, lViewRotation);
+
+	// Trace Direction from camera
+	FVector lAimDirection = lViewRotation.Vector();
+	FVector lTraceEnd = lViewLocation + lAimDirection * MaxDistance;
+
+	FHitResult lHit;
+	FCollisionQueryParams lParams;
+	lParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(lHit, lViewLocation, lTraceEnd, ECC_Visibility, lParams))
+	{
+		HitResult = lHit;
+		OutPoint = lHit.ImpactPoint;
+		return true;
+	}
+
+	//if no Blocking Hit
+	OutPoint = lTraceEnd;
+	return true;
+}
+
+//
+void AUE08BaseCharacter::Server_PlatformActivate_Implementation(AUE08TriggerPlatform* TriggerPlatform, bool bIsActivate_In)
+{
+	TriggerPlatform->Multicast_SetIsActivated(bIsActivate_In);
+
+}
+
+//
+void AUE08BaseCharacter::Client_PlatformActivate_Implementation(AUE08TriggerPlatform* TriggerPlatform, bool bIsActivate_In)
+{
+	TriggerPlatform->Multicast_SetIsActivated(bIsActivate_In);
+
+}
+
 
 
 // 

@@ -23,6 +23,9 @@ public:
 	UFUNCTION()
 	void InitHealthComponent();
 
+	UFUNCTION(BlueprintCallable)
+	void HealActor(float healthToAdd);
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -22,6 +22,15 @@ public:
 
 	virtual void PostInitializeComponents() override;
 
+	UFUNCTION(Server, Reliable)
+	void Server_PlatformActivate(class AUE08TriggerPlatform* TriggerPlatform, bool bIsActivate_In);
+
+	UFUNCTION(Client, Reliable)
+	void Client_PlatformActivate(class AUE08TriggerPlatform* TriggerPlatform, bool bIsActivate_In);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetAimPoint(FHitResult& HitResult, FVector& OutPoint, float MaxDistance) const;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -41,7 +50,11 @@ public:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly)
 	class UUE08HealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	class UUE08WeaponComponent* WeaponComponent;
 
 private:
 

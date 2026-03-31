@@ -10,7 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-
+#include "Components/UE08WeaponComponent.h"
 
 DEFINE_LOG_CATEGORY(LogPlayerCharacter)
 
@@ -20,8 +20,9 @@ AUE08PlayerCharacter::AUE08PlayerCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->TargetArmLength = 200.0f;
 	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->SocketOffset = { 0.0f, 100.0f, 50.0f };
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -82,7 +83,18 @@ void AUE08PlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 	// Looking
 	EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUE08PlayerCharacter::Look);
-	
+
+	//Fire
+	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &AUE08PlayerCharacter::OnStartFire);
+	EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &AUE08PlayerCharacter::OnStopFire);
+
+	//Zoom
+	EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Started, this, &AUE08PlayerCharacter::Zoom, true);
+	EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Completed, this, &AUE08PlayerCharacter::Zoom, false);
+
+	//Reload
+	EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Started, this, &AUE08PlayerCharacter::Reload);
+
 }
 
 void AUE08PlayerCharacter::Move(const FInputActionValue& Value)
@@ -117,6 +129,42 @@ void AUE08PlayerCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+//
+void AUE08PlayerCharacter::OnStartFire()
+{
+	bUseControllerRotationYaw = true;
+	WeaponComponent->StartFire();
+}
+
+//
+void AUE08PlayerCharacter::OnStopFire()
+{
+	bUseControllerRotationYaw = false;
+	WeaponComponent->StopFire();
+}
+
+
+//
+void AUE08PlayerCharacter::Zoom(bool bIsZooming)
+{
+	if (bIsZooming) 
+	{
+		bUseControllerRotationYaw = true;
+		FollowCamera->SetFieldOfView(60.0f);
+	}
+	else
+	{
+		bUseControllerRotationYaw = false;
+		FollowCamera->SetFieldOfView(90.0f);
+	}
+}
+
+//
+void AUE08PlayerCharacter::Reload()
+{
+	WeaponComponent->Reload();
 }
 
 //

@@ -31,6 +31,22 @@ void UUE08HealthComponent::InitHealthComponent()
 	}
 }
 
+
+//
+void UUE08HealthComponent::HealActor(float healthToAdd)
+{
+	float UpdatedHealth = FMath::Clamp(healthToAdd, 0.0f, MaxHealth);
+	float HealthDelta = UpdatedHealth + Health;
+	HealthDelta = FMath::Clamp(HealthDelta, healthToAdd, MaxHealth);
+
+	Health = HealthDelta;
+
+	OnHealthChanged.Broadcast(Health, HealthDelta);
+
+	UE_LOG(LogUE08HealthComponent, Warning, TEXT("Character get %f health. Current health is: %f"), healthToAdd, Health);
+}
+
+
 //
 void UUE08HealthComponent::GetDamage(AActor* DamageActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser )
 {

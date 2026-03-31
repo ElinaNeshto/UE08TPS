@@ -14,6 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, Health, float, HealthDelta);
 
 
+//DamageType
 UENUM(BlueprintType)
 enum class EDamageType : uint8
 {
@@ -23,6 +24,23 @@ enum class EDamageType : uint8
 	Explosion   UMETA(DisplayName = "ExplosionDamage", ToolTip = "BurnAndImpactDamage")
 };
 
+//Ammo Data
+USTRUCT(BlueprintType)
+struct FAmmoData
+{
+	GENERATED_BODY()
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Weapon")
+	int32 Bullets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	int32 Clips;
+
+};
+
+
+// Characters
 USTRUCT(BlueprintType) // , Blueprintable, Blueprintspawnable
 struct FMyCharacterStats
 {

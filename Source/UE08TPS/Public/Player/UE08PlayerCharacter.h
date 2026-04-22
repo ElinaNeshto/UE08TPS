@@ -42,6 +42,8 @@ public:
 
 	virtual void HealthChanged(float Health, float DeltaHealth) override;
 
+	bool RandomizedValue();
+
 
 protected:
 

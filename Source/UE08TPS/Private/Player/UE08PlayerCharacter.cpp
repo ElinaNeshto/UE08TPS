@@ -39,6 +39,12 @@ void AUE08PlayerCharacter::HealthChanged(float Health, float DeltaHealth)
 
 }
 
+bool AUE08PlayerCharacter::RandomizedValue()
+{
+	srand(time(nullptr));
+	return rand() % 2==0;
+}
+
 
 
 //
@@ -164,7 +170,34 @@ void AUE08PlayerCharacter::Zoom(bool bIsZooming)
 //
 void AUE08PlayerCharacter::Reload()
 {
-	WeaponComponent->Reload();
+	bool bIsCanReload = WeaponComponent->Reload();
+	EEquippedWeaponType weaponType = EEquippedWeaponType::Rifle;
+	if (bIsCanReload) 
+	{
+		switch (weaponType)
+		{
+			case EEquippedWeaponType::None:
+				EquippedWeaponType = EEquippedWeaponType::None;
+				return;
+				
+			case EEquippedWeaponType::Pistol:
+				EquippedWeaponType = EEquippedWeaponType::Pistol;
+				PlayAnimMontage(ReloadAnimPistol);
+				return;
+			case EEquippedWeaponType::Rifle:
+				EquippedWeaponType = EEquippedWeaponType::Rifle;
+				PlayAnimMontage(ReloadAnimRifle);
+				return;
+			case EEquippedWeaponType::Grenade:
+				EquippedWeaponType = EEquippedWeaponType::Grenade;
+				return;
+				
+			default:
+				break;
+		}
+	
+		
+	}
 }
 
 //

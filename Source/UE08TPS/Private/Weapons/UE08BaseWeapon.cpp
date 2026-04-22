@@ -55,26 +55,30 @@ void AUE08BaseWeapon::StopFire()
 
 
 //
-void AUE08BaseWeapon::Reload()
+bool AUE08BaseWeapon::Reload()
 {
 	if (CurrentAmmo.Clips == 0)
 	{
 		UE_LOG(LogBaseWeapon, Warning, TEXT("No clips"));
-		return;
+		isNeedAmmo = true;
+		return false;
 	}
 
 	if (CurrentAmmo.Bullets == DefaultAmmo.Bullets)
-		return;
+		return false;
 
+	isNeedAmmo = false;
 	ReloadInProgress = true;
 	WeaponMesh->PlayAnimation(ReloadAnim, false);
 
 	float lReloadAnimTime = ReloadAnim->GetPlayLength();
 
-	GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &AUE08BaseWeapon::SwitchIsReload, -1.0f, false, lReloadAnimTime);
+	GetWorldTimerManager().SetTimer(ReloadTimerHandle, this, &AUE08BaseWeapon::SwitchIsReload, 1.0f, false, lReloadAnimTime);
 
 	CurrentAmmo.Clips--;
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+
+	return true;
 }
 
 //
@@ -191,15 +195,17 @@ void AUE08BaseWeapon::MakeShot()
 		return;
 	}
 
-	//FVector lTempStart, lTempEnd;
-	//FQuat lDeltaRotation = FQuat::FindBetween(lTempStart, lTempEnd);
+	//FVector lTraceStart, lTraceEnd;
+	// GetTraceData(lTraceStart, lTraceEnd)
+	// 
+	//FQuat lDeltaRotation = FQuat::FindBetween(lTraceStar, lTraceEnd);
 	//FRotator lDeltaRotator = lDeltaRotation.Rotator();
 	
-	//CreateProjectile(lTempStart, lTempEnd, lDeltaRotator);
-
-	WeaponMesh->PlayAnimation(FireAnim, false);
+	//CreateProjectile(lTraceStar, lTraceEnd, lDeltaRotator);
 
 	BarrelComponent->Shoot();
+
+	//WeaponMesh->PlayAnimation(FireAnim, false);
 
 	DecreaseAmmo();
 }
@@ -208,6 +214,13 @@ void AUE08BaseWeapon::MakeShot()
 void AUE08BaseWeapon::SwitchIsReload()
 {
 	ReloadInProgress = !ReloadInProgress;
+}
+
+
+//
+void AUE08BaseWeapon::AddAmmo(int32 ClipsToAdd)
+{
+	CurrentAmmo.Clips += ClipsToAdd;
 }
 
 

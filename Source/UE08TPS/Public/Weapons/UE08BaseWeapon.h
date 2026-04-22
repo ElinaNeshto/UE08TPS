@@ -23,10 +23,14 @@ public:
 
 	void StopFire();
 
-	void Reload();
+	UFUNCTION(BlueprintCallable)
+	bool Reload();
+
 	bool CanReload() const;
 
 	void DecreaseAmmo();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool IsClipEmpty() const;
 
 	bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
@@ -44,6 +48,15 @@ public:
 
 	void SwitchIsReload();
 
+	UFUNCTION(BlueprintCallable)
+	void AddAmmo(int32 ClipsToAdd);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure) const
+	FAmmoData GetCurrentAmmo() 
+	{ 
+		return CurrentAmmo; 
+	};
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -56,6 +69,8 @@ private:
 
 public:
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool isNeedAmmo = false;
 
 protected:
 

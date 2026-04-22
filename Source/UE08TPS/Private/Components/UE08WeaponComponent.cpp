@@ -109,12 +109,18 @@ void UUE08WeaponComponent::StopFire()
 }
 
 //
-void UUE08WeaponComponent::Reload()
+bool UUE08WeaponComponent::Reload()
 {
 	if (!IsValid(CurrentWeapon))
-		return;
+		return false;
 
-	CurrentWeapon->Reload();
+	if (CurrentWeapon->Reload())
+	{
+		return true;
+	}
+
+	return false;
+	
 }
 
 //

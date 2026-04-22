@@ -2,7 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "UE08TPS.h"
 #include "UE08BaseCharacter.generated.h"
+
+
+class UUE08WeaponComponent;
+class UAnimMontage;
 
 UCLASS()
 class UE08TPS_API AUE08BaseCharacter : public ACharacter
@@ -31,6 +36,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetAimPoint(FHitResult& HitResult, FVector& OutPoint, float MaxDistance) const;
 
+	UFUNCTION(BlueprintCallable, BlueprintPure) const
+	UUE08WeaponComponent* GetWeaponComponent()
+	{
+		return WeaponComponent;
+	}
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -47,6 +58,11 @@ private:
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UAnimMontage* ReloadAnimRifle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UAnimMontage* ReloadAnimPistol;
 
 protected:
 
@@ -54,7 +70,10 @@ protected:
 	class UUE08HealthComponent* HealthComponent;
 
 	UPROPERTY(EditDefaultsOnly)
-	class UUE08WeaponComponent* WeaponComponent;
+	UUE08WeaponComponent* WeaponComponent;
+
+	UPROPERTY(BlueprintReadWrite)
+	EEquippedWeaponType EquippedWeaponType;
 
 private:
 

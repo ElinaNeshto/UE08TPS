@@ -20,14 +20,19 @@ public:
 
 	UUE08WeaponComponent();
 
+	UFUNCTION(BlueprintCallable)
 	void StartFire();
 
+	UFUNCTION(BlueprintCallable)
 	void StopFire();
 
-	void Reload();
+	UFUNCTION(BlueprintCallable)
+	bool Reload();
 
+	UFUNCTION(BlueprintCallable)
 	void NextWeapon();
 
+	UFUNCTION(BlueprintCallable)
 	void InitWeaponComponent();
 
 private:

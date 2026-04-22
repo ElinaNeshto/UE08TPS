@@ -24,6 +24,16 @@ enum class EDamageType : uint8
 	Explosion   UMETA(DisplayName = "ExplosionDamage", ToolTip = "BurnAndImpactDamage")
 };
 
+//DamageType
+UENUM(BlueprintType)
+enum class EEquippedWeaponType : uint8
+{
+	None,
+	Pistol,
+	Rifle,
+	Grenade
+};
+
 //Ammo Data
 USTRUCT(BlueprintType)
 struct FAmmoData
